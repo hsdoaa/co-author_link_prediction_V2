@@ -4,6 +4,11 @@ import csv
 from pathlib import Path
 
 
+#print("##########Author_SVM_RF_Default##############")
+#print("##########normalization##############")
+#print("##########standarization##############")
+
+print("##########No_Feature_scaling##############")
 
 
 train_path = Path("R_training")
@@ -34,7 +39,7 @@ upi_nums=[]
 R_intersts=[]
 
 #f = io.open("test", mode="r", encoding="utf-8")  #errors='ignore'           
-with open("AMiner_Author_330000.txt", mode="r", encoding="utf-8") as f:
+with open("AMiner_Author.txt", mode="r", encoding="utf-8") as f: #replace AMiner_Author_330000 with AMiner_Author
     for line in f:
         firstWord=line.split(' ', 1)[0]
         rest=line.split(' ', 1)[1:]
@@ -246,7 +251,8 @@ with open(train_path/"jaccard_train.csv") as f:
      for row in reader:
         jaccard_train.append(row[1])
 print(len(jaccard_train))
-train_dataset['jaccard']=jaccard_train
+train_dataset['jaccard']=pd.Series(jaccard_train) #to avoid error at https://stackoverflow.com/questions/42382263/valueerror-length-of-values-does-not-match-length-of-index-pandas-dataframe-u
+
 
 with open(train_path/"dice_train.csv") as f:
      reader = csv.reader(f)   
@@ -254,7 +260,7 @@ with open(train_path/"dice_train.csv") as f:
      for row in reader:
         dice_train.append(row[1])
 print(len(dice_train))
-train_dataset['dice']=dice_train
+train_dataset['dice']=pd.Series(dice_train)
 
 with open(train_path/"invlogweighted_train.csv") as f:
      reader = csv.reader(f)   
@@ -262,7 +268,7 @@ with open(train_path/"invlogweighted_train.csv") as f:
      for row in reader:
         invlogweighted_train.append(row[1])
 print("]]]",len(invlogweighted_train))
-train_dataset['invlogweighted']=invlogweighted_train
+train_dataset['invlogweighted']=pd.Series(invlogweighted_train)
 
 with open(train_path/"aa_train.csv") as f:
      reader = csv.reader(f)   
@@ -270,7 +276,7 @@ with open(train_path/"aa_train.csv") as f:
      for row in reader:
         aa_train.append(row[1])
 print("]]]",len(aa_train))
-train_dataset['aa']=aa_train
+train_dataset['aa']=pd.Series(aa_train)
 
 with open(train_path/"pa_train.csv") as f:
      reader = csv.reader(f)   
@@ -278,7 +284,7 @@ with open(train_path/"pa_train.csv") as f:
      for row in reader:
         pa_train.append(row[1])
 print("]]]",len(pa_train))
-train_dataset['pa']=pa_train
+train_dataset['pa']=pd.Series(pa_train)
 
 
 with open(train_path/"cn_train.csv") as f:
@@ -287,7 +293,7 @@ with open(train_path/"cn_train.csv") as f:
      for row in reader:
         cn_train.append(row[1])
 print("]]]",len(cn_train))
-train_dataset['cn']=cn_train
+train_dataset['cn']=pd.Series(cn_train)
 
 with open(train_path/"katz_train.csv") as f:
      reader = csv.reader(f)   
@@ -295,7 +301,7 @@ with open(train_path/"katz_train.csv") as f:
      for row in reader:
         katz_train.append(row[1])
 print("]]]",len(katz_train))
-train_dataset['katz']=katz_train
+train_dataset['katz']=pd.Series(katz_train)
 
 with open(train_path/"cos_sim_aff_train.csv") as f:
      reader = csv.reader(f)   
@@ -304,7 +310,7 @@ with open(train_path/"cos_sim_aff_train.csv") as f:
         for i in row:
            cos_sim_aff_train.append(i)
 print(";;;",len(cos_sim_aff_train))
-train_dataset['cos_sim_aff']=cos_sim_aff_train
+train_dataset['cos_sim_aff']=pd.Series(cos_sim_aff_train)
 with open(train_path/"cos_sim_RS_train.csv") as f:
      reader = csv.reader(f)   
      next(reader)      # to ignore first row 
@@ -312,7 +318,7 @@ with open(train_path/"cos_sim_RS_train.csv") as f:
         for i in row:
            cos_sim_RS_train.append(i)
 print("----",len(cos_sim_RS_train))
-train_dataset['cos_sim_RS']=cos_sim_RS_train
+train_dataset['cos_sim_RS']=pd.Series(cos_sim_RS_train)
 
 
 with open("ad_matrix_training1.csv") as f:
@@ -322,7 +328,7 @@ with open("ad_matrix_training1.csv") as f:
         for i in row:
            train_link_label.append(i)
 print("$$$",len(train_link_label))
-train_dataset['label']=train_link_label
+train_dataset['label']=pd.Series(train_link_label)
 
 
 print(train_dataset.shape)
@@ -360,7 +366,7 @@ with open(test_path/"jaccard_test.csv") as f:
      for row in reader:
         jaccard_test.append(row[1])
 print(len(jaccard_test))
-test_dataset['jaccard']=jaccard_test
+test_dataset['jaccard']=pd.Series(jaccard_test)
 
 with open(test_path/"dice_test.csv") as f:
      reader = csv.reader(f)   
@@ -368,7 +374,7 @@ with open(test_path/"dice_test.csv") as f:
      for row in reader:
         dice_test.append(row[1])
 print(len(dice_train))
-test_dataset['dice']=dice_test
+test_dataset['dice']=pd.Series(dice_test)
 
 with open(test_path/"invlogweighted_test.csv") as f:
      reader = csv.reader(f)   
@@ -376,7 +382,7 @@ with open(test_path/"invlogweighted_test.csv") as f:
      for row in reader:
         invlogweighted_test.append(row[1])
 print("]]]",len(invlogweighted_test))
-test_dataset['invlogweighted']=invlogweighted_test
+test_dataset['invlogweighted']=pd.Series(invlogweighted_test)
 
 with open(test_path/"aa_test.csv") as f:
      reader = csv.reader(f)   
@@ -384,7 +390,7 @@ with open(test_path/"aa_test.csv") as f:
      for row in reader:
         aa_test.append(row[1])
 print("]]]",len(aa_test))
-test_dataset['aa']=aa_test
+test_dataset['aa']=pd.Series(aa_test)
 
 with open(test_path/"pa_test.csv") as f:
      reader = csv.reader(f)   
@@ -392,7 +398,7 @@ with open(test_path/"pa_test.csv") as f:
      for row in reader:
         pa_test.append(row[1])
 print("]]]",len(pa_test))
-test_dataset['pa']=pa_test
+test_dataset['pa']=pd.Series(pa_test)
 
 
 with open(test_path/"cn_test.csv") as f:
@@ -401,7 +407,7 @@ with open(test_path/"cn_test.csv") as f:
      for row in reader:
         cn_test.append(row[1])
 print("]]]",len(cn_test))
-test_dataset['cn']=cn_test
+test_dataset['cn']=pd.Series(cn_test)
 
 with open(test_path/"katz_test.csv") as f:
      reader = csv.reader(f)   
@@ -409,7 +415,7 @@ with open(test_path/"katz_test.csv") as f:
      for row in reader:
         katz_test.append(row[1])
 print("]]]",len(katz_test))
-test_dataset['katz']=katz_test
+test_dataset['katz']=pd.Series(katz_test)
 
 with open(test_path/"cos_sim_aff_test.csv") as f:
      reader = csv.reader(f)   
@@ -418,7 +424,7 @@ with open(test_path/"cos_sim_aff_test.csv") as f:
         for i in row:
            cos_sim_aff_test.append(i)
 print("]]]",len(cos_sim_aff_test))
-test_dataset['cos_sim_aff']=cos_sim_aff_test
+test_dataset['cos_sim_aff']=pd.Series(cos_sim_aff_test)
 with open(test_path/"cos_sim_RS_test.csv") as f:
      reader = csv.reader(f)   
      next(reader)      # to ignore first row 
@@ -426,7 +432,7 @@ with open(test_path/"cos_sim_RS_test.csv") as f:
         for i in row:
            cos_sim_RS_test.append(i)
 print("]]]",len(cos_sim_RS_test))
-test_dataset['cos_sim_RS']=cos_sim_RS_test
+test_dataset['cos_sim_RS']=pd.Series(cos_sim_RS_test)
 
 with open("ad_matrix_testing1.csv") as f:
      reader = csv.reader(f)   
@@ -435,11 +441,13 @@ with open("ad_matrix_testing1.csv") as f:
         for i in row:
            test_link_label.append(i)
 print("]]]",len(test_link_label))
-test_dataset['label']=test_link_label
+test_dataset['label']=pd.Series(test_link_label)
 print(test_dataset.shape)
 print(test_dataset.head())
-features2=test_dataset.columns
-print("test_features=",features2)
+#features2=test_dataset.columns
+#print("test_features=",features2)
+
+
 print("==============")
 print(train_dataset.info())
 print(test_dataset.info())
@@ -470,14 +478,34 @@ print(train_dataset.info())
 print(test_dataset.info())
 
 ##########################################################################
+
+from sklearn.neural_network import MLPClassifier
+#classifier = MLPClassifier()
+
+from sklearn.linear_model import LogisticRegression
+#classifier=LogisticRegression()
+
+from sklearn.naive_bayes import GaussianNB
+#classifier = GaussianNB()
+
+from sklearn.neighbors import KNeighborsClassifier
+#classifier = KNeighborsClassifier()
+
 from sklearn import svm
-#classifier =svm.SVC(gamma='scale',C=1,probability=True)
+classifier =svm.SVC() #classifier =svm.SVC(gamma='scale',C=1,probability=True)
 
 from sklearn.ensemble import RandomForestClassifier
-classifier = RandomForestClassifier(n_estimators=30, max_depth=10, random_state=0)
+#classifier = RandomForestClassifier()#classifier = RandomForestClassifier(n_estimators=30, max_depth=10, random_state=0)
+
+print("CCCCCC", classifier)
 
 from sklearn.preprocessing import MinMaxScaler #For feature normalization
-scaler = MinMaxScaler()
+from sklearn.preprocessing import StandardScaler # For feature standarization
+
+#scaler = MinMaxScaler()
+#scaler = StandardScaler()
+
+#print("SSSSSS",scaler )
 
 #train_existing_links=train_dataset[train_dataset['label']!=0]
 
@@ -521,14 +549,37 @@ testing_df['label'] = testing_df['label'].astype('category')
 print(testing_df.head())
 
 
+
+############################################################################################################
+#features=['pc_nums', 'cn_nums', 'hi_nums', 'pi_nums', 'upi_nums','cos_sim_aff','cos_sim_RS','jaccard','dice', 'invlogweighted']#ICMLC2019
+#features=['pc_nums', 'cn_nums', 'hi_nums', 'pi_nums', 'upi_nums','cos_sim_aff','cos_sim_RS']
+#features=['jaccard','dice', 'invlogweighted', 'aa', 'pa', 'cn', 'katz']
+#features=['pc_nums', 'cn_nums', 'hi_nums', 'pi_nums', 'upi_nums', 'jaccard','dice', 'invlogweighted', 'aa', 'pa', 'cn', 'katz', 'cos_sim_aff','cos_sim_RS']
+##########################################################################################################################################################
+
+################Feature importance#############################################
+#features=['pc_nums', 'cn_nums', 'hi_nums', 'pi_nums', 'upi_nums']
+features=['cos_sim_aff']
+#features=['cos_sim_RS']
+#features=['jaccard','dice', 'invlogweighted']
+##############################################
+
+
+
+
+
 #columns = []
 # Train RF Classifer
 X_train = training_df[features]
+#X_train= scaler.fit_transform(X_train) #scale training features
 y_train = training_df['label']
+
+
 clf = classifier.fit(X_train,y_train)
 
 #Predict the response for test dataset
 X_test = testing_df[features]
+#X_test= scaler.fit_transform(X_test)  #scale testing features
 y_test = testing_df["label"]
 y_pred = classifier.predict(X_test)
 
@@ -547,5 +598,10 @@ print(classification_report(y_test, y_pred))
 auc=roc_auc_score(y_test,y_pred)
 auc = float("{0:.3f}".format(auc))
 print("AUC=",auc)
+
+print(features)
+print(classifier)
+#print(scaler)
+
 
 
