@@ -4,6 +4,11 @@ import csv
 from pathlib import Path
 
 
+#print("##########Author_SVM_RF_Default##############")
+#print("##########normalization##############")
+print("##########standarization##############")
+
+#print("##########No_Feature_scaling##############")
 
 
 train_path = Path("R_training")
@@ -246,7 +251,8 @@ with open(train_path/"jaccard_train.csv") as f:
      for row in reader:
         jaccard_train.append(row[1])
 print(len(jaccard_train))
-train_dataset['jaccard']=jaccard_train
+print(train_dataset.info())
+train_dataset['jaccard']=pd.Series(jaccard_train) #to avoid error at https://stackoverflow.com/questions/42382263/valueerror-length-of-values-does-not-match-length-of-index-pandas-dataframe-u
 
 with open(train_path/"dice_train.csv") as f:
      reader = csv.reader(f)   
@@ -254,7 +260,7 @@ with open(train_path/"dice_train.csv") as f:
      for row in reader:
         dice_train.append(row[1])
 print(len(dice_train))
-train_dataset['dice']=dice_train
+train_dataset['dice']=pd.Series(dice_train)
 
 with open(train_path/"invlogweighted_train.csv") as f:
      reader = csv.reader(f)   
@@ -262,7 +268,7 @@ with open(train_path/"invlogweighted_train.csv") as f:
      for row in reader:
         invlogweighted_train.append(row[1])
 print("]]]",len(invlogweighted_train))
-train_dataset['invlogweighted']=invlogweighted_train
+train_dataset['invlogweighted']=pd.Series(invlogweighted_train)
 
 with open(train_path/"aa_train.csv") as f:
      reader = csv.reader(f)   
@@ -270,7 +276,7 @@ with open(train_path/"aa_train.csv") as f:
      for row in reader:
         aa_train.append(row[1])
 print("]]]",len(aa_train))
-train_dataset['aa']=aa_train
+train_dataset['aa']=pd.Series(aa_train)
 
 with open(train_path/"pa_train.csv") as f:
      reader = csv.reader(f)   
@@ -278,7 +284,7 @@ with open(train_path/"pa_train.csv") as f:
      for row in reader:
         pa_train.append(row[1])
 print("]]]",len(pa_train))
-train_dataset['pa']=pa_train
+train_dataset['pa']=pd.Series(pa_train)
 
 
 with open(train_path/"cn_train.csv") as f:
@@ -287,7 +293,7 @@ with open(train_path/"cn_train.csv") as f:
      for row in reader:
         cn_train.append(row[1])
 print("]]]",len(cn_train))
-train_dataset['cn']=cn_train
+train_dataset['cn']=pd.Series(cn_train)
 
 with open(train_path/"katz_train.csv") as f:
      reader = csv.reader(f)   
@@ -295,7 +301,7 @@ with open(train_path/"katz_train.csv") as f:
      for row in reader:
         katz_train.append(row[1])
 print("]]]",len(katz_train))
-train_dataset['katz']=katz_train
+train_dataset['katz']=pd.Series(katz_train)
 
 with open(train_path/"cos_sim_aff_train.csv") as f:
      reader = csv.reader(f)   
@@ -312,7 +318,7 @@ with open(train_path/"cos_sim_RS_train.csv") as f:
         for i in row:
            cos_sim_RS_train.append(i)
 print("----",len(cos_sim_RS_train))
-train_dataset['cos_sim_RS']=cos_sim_RS_train
+train_dataset['cos_sim_RS']=pd.Series(cos_sim_RS_train)
 
 
 with open("ad_matrix_training1.csv") as f:
@@ -322,7 +328,7 @@ with open("ad_matrix_training1.csv") as f:
         for i in row:
            train_link_label.append(i)
 print("$$$",len(train_link_label))
-train_dataset['label']=train_link_label
+train_dataset['label']=pd.Series(train_link_label)
 
 
 print(train_dataset.shape)
@@ -470,14 +476,38 @@ print(train_dataset.info())
 print(test_dataset.info())
 
 ##########################################################################
+
+from sklearn.neural_network import MLPClassifier
+#classifier = MLPClassifier()
+
+from sklearn.linear_model import LogisticRegression
+#classifier=LogisticRegression()
+
+from sklearn.naive_bayes import GaussianNB
+classifier = GaussianNB()
+
+from sklearn.neighbors import KNeighborsClassifier
+#classifier = KNeighborsClassifier()
+
 from sklearn import svm
-#classifier =svm.SVC(gamma='scale',C=1,probability=True)
+#classifier =svm.SVC() #classifier =svm.SVC(gamma='scale',C=1,probability=True)
 
 from sklearn.ensemble import RandomForestClassifier
-classifier = RandomForestClassifier(n_estimators=30, max_depth=10, random_state=0)
+#classifier = RandomForestClassifier()#classifier = RandomForestClassifier(n_estimators=30, max_depth=10, random_state=0)
+
+
+
+print("CCCCCC", classifier)
 
 from sklearn.preprocessing import MinMaxScaler #For feature normalization
-scaler = MinMaxScaler()
+from sklearn.preprocessing import StandardScaler # For feature standarization
+
+#scaler = MinMaxScaler()
+#scaler = StandardScaler()
+
+#print("SSSSSS",scaler )
+
+
 
 #train_existing_links=train_dataset[train_dataset['label']!=0]
 
@@ -520,22 +550,33 @@ testing_df = test_missing_links.append(test_existing_links, ignore_index=True)
 testing_df['label'] = testing_df['label'].astype('category')
 print(testing_df.head())
 
+#features=['pc_nums', 'cn_nums', 'hi_nums', 'pi_nums', 'upi_nums','cos_sim_aff','cos_sim_RS','jaccard','dice', 'invlogweighted'] #ICMLC2019_paper_approach
+#features=['pc_nums', 'cn_nums', 'hi_nums', 'pi_nums', 'upi_nums','cos_sim_aff','cos_sim_RS'] #author approach
+########################Feature importance
+#features=['pc_nums', 'cn_nums', 'hi_nums', 'pi_nums', 'upi_nums']
+features=['cos_sim_RS']
+#features=['cos_sim_aff']
+#features=['jaccard','dice', 'invlogweighted']
 
 #columns = []
 # Train RF Classifer
 X_train = training_df[features]
+#X_train= scaler.fit_transform(X_train) #scale training features
 y_train = training_df['label']
+
+print("<<<>>>",classifier)
 clf = classifier.fit(X_train,y_train)
 
 #Predict the response for test dataset
 X_test = testing_df[features]
+#X_test= scaler.fit_transform(X_test)  #scale testing features
 y_test = testing_df["label"]
-y_pred = classifier.predict(X_test)
-
 
 # Evaluate the model: Model Accuracy, how often is the classifier correct
 from sklearn import metrics #Import scikit-learn metrics module for accuracy calculation
 from sklearn.metrics import classification_report #for classifier evaluation
+y_pred = classifier.predict(X_test)
+
 from sklearn.metrics import roc_auc_score # for printing AUC
 
 
@@ -548,4 +589,6 @@ auc=roc_auc_score(y_test,y_pred)
 auc = float("{0:.3f}".format(auc))
 print("AUC=",auc)
 
-
+print(features)
+print(classifier)
+#print(scaler)
